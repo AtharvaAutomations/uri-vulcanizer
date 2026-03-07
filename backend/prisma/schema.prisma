@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ChangeLog {
+  id        Int      @id @default(autoincrement())
+  machineId String?  @default("machine1")
+  timestamp DateTime @default(now())
+  user      String?
+  action    String
+  details   Json
+}
+
+model Reading {
+  id                  Int      @id @default(autoincrement())
+  machineId           String   @default("machine1")
+  cycleNumber         String?  // Format: R[MACHINE][YYYYMMDD][CYCLE] e.g., R22025112012
+
+  // Set values (target values from recipe)
+  setTemperature      Float?   // 32-bit float from D register
+  setPressure         Float?   // 32-bit float from D register
+  setCuringTime       Int?     // 16-bit integer in seconds
+  setExhaustDelay     Int?     // 16-bit integer in seconds
+
+  // Actual values (current state in machine)
+  actualTemperature   Float?   // 32-bit float from D register
+  actualPressure      Float?   // 32-bit float from D register
+  actualCuringTime    Int?     // 16-bit integer in seconds
+  actualExhaustDelay  Int?     // 16-bit integer in seconds
+
+  // Metadata (no longer storing m100 status)
+  timestamp           DateTime @default(now())
+
+  @@index([machineId, timestamp])
+  @@index([machineId, cycleNumber])
+}
+
+model Recipe {
+  id                Int       @id @default(autoincrement())
+  machineId         String    @default("machine1")
+  name              String
+  version           Int       @default(1)
+
+  parentId          Int?
+  parent            Recipe?   @relation("RecipeVersionParent", fields: [parentId], references: [id])
+  children          Recipe[]  @relation("RecipeVersionParent")
+
+  curingTemp        Float //D2008 (processed as D2009)
+  tempBandPlus      Float //D2050 (processed as D2051)
+  tempBandMinus     Float //D2052 (processed as D2053)
+  pressure          Float //D2010 (processed as D2011)
+  pressureBandPlus  Float //D2054 (processed as D2055)
+  pressureBandMinus Float //D2056 (processed as D2057)
+  curingTime        Int //D2014
+  exhaustDelay      Int //D2016
+  purgingCycles     Int //D2012
+
+  high1 Float //D2020 (processed as D2021)
+  low1  Float //D2022 (processed as D2023)
+  high2 Float //D2024 (processed as D2025)
+  low2  Float //D2026 (processed as D2027)
+  high3 Float //D2028 (processed as D2029)
+  low3  Float //D2030 (processed as D2031)
+  high4 Float //D2032 (processed as D2033)
+  low4  Float //D2034 (processed as D2035)
+  high5 Float //D2036 (processed as D2037)
+  low5  Float //D2038 (processed as D2039)
+
+  scheduledAt DateTime?
+  activatedAt DateTime?
+  finishedAt  DateTime?
+  status      String    @default("pending") // draft/pending/activated/expired
+
+  createdAt   DateTime  @default(now())
+}

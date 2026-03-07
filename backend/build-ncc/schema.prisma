@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ChangeLog {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  user      String?
+  action    String
+  details   Json
+}
+
+model Reading {
+  id          Int      @id @default(autoincrement())
+  temperature Float
+  pressure    Float
+  timestamp   DateTime @default(now())
+}
+
+model Recipe {
+  id      Int    @id @default(autoincrement())
+  name    String
+  version Int    @default(1)
+
+  parentId Int?
+  parent   Recipe?  @relation("RecipeVersionParent", fields: [parentId], references: [id])
+  children Recipe[] @relation("RecipeVersionParent")
+
+  curingTemp        Float //2008
+  tempBandPlus      Float //2050
+  tempBandMinus     Float //2052
+  pressure          Float //2010
+  pressureBandPlus  Float //2054
+  pressureBandMinus Float //2056
+  curingTime        Int //2014
+  exhaustDelay      Int //2016
+  purgingCycles     Int //2012
+
+  high1 Float //2020
+  low1  Float //2022
+  high2 Float //2024
+  low2  Float //2026
+  high3 Float //2028
+  low3  Float //2030
+  high4 Float //2032
+  low4  Float //2034
+  high5 Float //2036
+  low5  Float //2038
+
+  scheduledAt DateTime?
+  activatedAt DateTime?
+  finishedAt  DateTime?
+  status      String    @default("pending") // draft/pending/activated/expired
+
+  createdAt DateTime @default(now())
+}

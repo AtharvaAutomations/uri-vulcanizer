@@ -1,0 +1,51 @@
+{
+  "name": "vulcanizer-backend",
+  "version": "1.0.0",
+  "description": "",
+  "bin": "dist/main.js",
+  "pkg": {
+    "scripts": [
+      "build-ncc/index.js"
+    ],
+    "assets": [
+      "node_modules/axios/dist/node/axios.cjs",
+      "prisma/schema.prisma"
+    ],
+    "targets": [
+      "node18-win-x64"
+    ],
+    "outputPath": "build"
+  },
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "prisma-generate": "prisma generate",
+    "prisma-migrate": "prisma migrate dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "axios": "^1.13.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "http": "^0.0.1-security",
+    "modbus-serial": "^8.0.23",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.10.6",
+    "@vercel/ncc": "^0.38.4",
+    "pkg": "^5.8.1",
+    "prisma": "^5.22.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  }
+}
