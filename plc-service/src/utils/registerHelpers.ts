@@ -35,13 +35,21 @@ export function parseRegister(regStr: string): number {
   const num = parseInt(numStr, 10);
 
   switch (type) {
-    case "D":
-      return isFloatRecipeRegister(num) ? num + 1 : num;
-    case "X":
+    case "D": {
+      // 🔥 ES2 Modbus offset
+      const baseAddr = 4096 + num;
+
+      // For float registers (2 words), sometimes offset shifts
+      return isFloatRecipeRegister(num) ? baseAddr + 1 : baseAddr;
+    }
+
     case "M":
-      return num;
+    case "X":
+      return num; // coils (no offset)
+
     case "C":
-      return 4544 + num;
+      return 4544 + num; // keep as-is (only if working)
+
     default:
       throw new Error(`Unknown register type: ${type}`);
   }

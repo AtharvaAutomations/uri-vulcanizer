@@ -68,7 +68,7 @@ export const PLC_REGISTERS: Record<MachineId, PlcRegisters> = {
     // Input readings
     temperature: "D54",
     pressure: "D3010",
-    cycleNumber: "D468",
+    // cycleNumber: "D468",
 
     // Set values
     setTemperature: "D408",
@@ -112,7 +112,7 @@ export const PLC_REGISTERS: Record<MachineId, PlcRegisters> = {
     // Input readings
     temperature: "D610",
     pressure: "D154",
-    cycleNumber: "D568",
+    // cycleNumber: "D568",
 
     // Set values
     setTemperature: "D508",
